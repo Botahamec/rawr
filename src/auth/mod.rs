@@ -50,7 +50,7 @@
 //! PasswordAuthenticator::new(CLIENT_ID, CLIENT_SECRET, USERNAME, PASSWORD);
 //! ```
 
-#![allow(unknown_lints, doc_markdown)]
+#![allow(unknown_lints)]
 
 use std::sync::{Arc, Mutex};
 use hyper;

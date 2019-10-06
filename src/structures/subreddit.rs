@@ -1,4 +1,4 @@
-#![allow(unknown_lints, wrong_self_convention, new_ret_no_self)]
+#![allow(unknown_lints)]
 use client::RedditClient;
 use options::{ListingOptions, TimeFilter, LinkPost, SelfPost};
 use structures::listing::Listing;
