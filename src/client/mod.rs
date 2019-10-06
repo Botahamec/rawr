@@ -52,7 +52,7 @@ pub struct RedditClient {
     /// issue saying why the API does not support your use-case, and we'll try to add it.
     pub client: Client,
     user_agent: String,
-    authenticator: Arc<Mutex<Box<Authenticator + Send>>>,
+    authenticator: Arc<Mutex<Box<dyn Authenticator + Send>>>,
     auto_logout: bool,
 }
 
@@ -60,7 +60,7 @@ pub struct RedditClient {
 impl RedditClient {
     /// Creates an instance of the `RedditClient` using the provided user agent.
     pub fn new(user_agent: &str,
-               authenticator: Arc<Mutex<Box<Authenticator + Send>>>)
+               authenticator: Arc<Mutex<Box<dyn Authenticator + Send>>>)
                -> RedditClient {
         // Connection pooling is problematic if there are pauses/sleeps in the program, so we
         // choose to disable it by using a non-pooling connector.
@@ -116,7 +116,7 @@ impl RedditClient {
 
     /// Gets a mutable reference to the authenticator using a `&RedditClient`. Mainly used
     /// in the `ensure_authenticated` method to update tokens if necessary.
-    pub fn get_authenticator(&self) -> MutexGuard<Box<Authenticator + Send + 'static>> {
+    pub fn get_authenticator(&self) -> MutexGuard<Box<dyn Authenticator + Send + 'static>> {
         self.authenticator.lock().unwrap()
     }
 
@@ -135,7 +135,7 @@ impl RedditClient {
     pub fn build_url(&self,
                      dest: &str,
                      oauth_required: bool,
-                     authenticator: &mut MutexGuard<Box<Authenticator + Send + 'static>>)
+                     authenticator: &mut MutexGuard<Box<dyn Authenticator + Send + 'static>>)
                      -> String {
         let oauth_supported = authenticator.oauth();
         let stem = if oauth_required || oauth_supported {
@@ -246,7 +246,7 @@ impl RedditClient {
         for character in item.chars() {
             match character {
                 ' ' => res.push('+'),
-                '*' | '-' | '.' | '0'...'9' | 'A'...'Z' | '_' | 'a'...'z' => res.push(character),
+                '*' | '-' | '.' | '0'..='9' | 'A'..='Z' | '_' | 'a'..='z' => res.push(character),
                 _ => {
                     for val in character.to_string().as_bytes() {
                         res = res + &format!("%{:02X}", val);

@@ -118,7 +118,7 @@ impl AnonymousAuthenticator {
     /// use rawr::auth::AnonymousAuthenticator;
     /// AnonymousAuthenticator::new();
     /// ```
-    pub fn new() -> Arc<Mutex<Box<Authenticator + Send>>> {
+    pub fn new() -> Arc<Mutex<Box<dyn Authenticator + Send>>> {
         Arc::new(Mutex::new(Box::new(AnonymousAuthenticator {})))
     }
 }
@@ -203,7 +203,7 @@ impl PasswordAuthenticator {
                client_secret: &str,
                username: &str,
                password: &str)
-               -> Arc<Mutex<Box<Authenticator + Send>>> {
+               -> Arc<Mutex<Box<dyn Authenticator + Send>>> {
         Arc::new(Mutex::new(Box::new(PasswordAuthenticator {
             client_id: client_id.to_owned(),
             client_secret: client_secret.to_owned(),
